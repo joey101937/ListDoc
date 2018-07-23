@@ -6,9 +6,11 @@
 package listdocument;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -20,24 +22,26 @@ import java.util.Map;
  */
 public class ListDocument {
    private File underlyingFile; //the file this document points to
-   private String separator = "~"; //this separates sections and cannot be used anywhere else, escape character
    private String title = "untitled listdoc"; //name of file
    private ArrayList<String> rawContent; //raw strings, index corresponds to line
    private Map<String,ArrayList<String>> contents = new HashMap<String,ArrayList<String>>();
    private ArrayList<String> keys = new ArrayList<String>();
-   /***
-    * TITLE
-    * SEP:<separator>
-    * <separator><key>
-    * item
-    * item
-    * item
-    * <separator><key>
-    * item
-    * item
-    * item
-    */
    
+   /*
+   first line is title, then after that the first character of a line is either
+   k or i, this denotes Key or Item respectively   
+   -------------------
+    * TITLE
+    * k<key>
+    * iitem1
+    * iitem2
+    * iitem3
+    * k<key>
+    * iitem1
+    * iitem2
+    * iitem3
+    --------------------
+  */
    /**
     * updates contents to match the underlying file
     * CURRENT CONTENTS WILL BE OVERWRITTEN
@@ -54,20 +58,19 @@ public class ListDocument {
            }
            rawContent = lines;
            title = lines.get(0); //title on first line
-           separator = lines.get(1).substring(4); //separator is on second lines after the 'SEP:'
            String currentKey = "";
            ArrayList<String> currentList = new ArrayList<>();
-           for(int i = 2; i < lines.size(); i++){   
-            if(lines.get(i).startsWith(separator)){
-               if(currentKey!=""){ //if we just ended a section, save it so we can start another
+           for(int i = 1; i < lines.size(); i++){   
+            if(lines.get(i).startsWith("k")){
+               if(currentKey != ""){ //if we just ended a section, save it so we can start another
                    contents.put(currentKey, currentList);
                }
-               currentKey = lines.get(i).substring(separator.length());
+               currentKey = lines.get(i).substring(1);
                keys.add(currentKey);
                currentList = new ArrayList<String>();
                continue;
             }
-            currentList.add(lines.get(i));
+            currentList.add(lines.get(i).substring(1));
            }
            contents.put(currentKey,currentList);
            br.close();
@@ -84,12 +87,33 @@ public class ListDocument {
    
    /**
     * updates the underlying file to match current in-memory contents
+    * OVERWRITES FILE IN FILE STRUCTURE
     */
    public void updateToSource(){
-       
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add(title);
+        for(String key : keys){
+            lines.add('k' + key);
+            for(String s : contents.get(key)){
+                lines.add('i'+s);
+            }
+        }
+         try {
+            FileWriter fw = new FileWriter(underlyingFile, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (String s : lines) {
+                bw.write(s);
+                System.out.println("writing... " + s);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+             System.out.println("ERROR CONTENTS OF " + title + " NOT WRITTEN TO FILE");
+        }
    }
    
-   public ListDocument(){
+   public ListDocument(String name){
        
    }
    
