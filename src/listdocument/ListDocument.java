@@ -65,9 +65,11 @@ public class ListDocument {
                currentKey = lines.get(i).substring(separator.length());
                keys.add(currentKey);
                currentList = new ArrayList<String>();
+               continue;
             }
             currentList.add(lines.get(i));
            }
+           contents.put(currentKey,currentList);
        } catch (FileNotFoundException ex) {
            System.out.println("Error trying to update ListDoc: " + title + " " + underlyingFile.getPath() + " not found");
            ex.printStackTrace();
@@ -77,10 +79,40 @@ public class ListDocument {
        }
    }
    
+   public ListDocument(){
+       
+   }
+   
+   public ListDocument(File f){
+       underlyingFile = f;
+       updateFromSource();
+   }
+   
+   
+   
    public ArrayList<String> getSection(String key){
        return contents.get(key);
    }
    
    
+   /**
+    * @return list of keys stored in this doc
+    */
+   public ArrayList<String> getKeys(){
+       ArrayList<String> output = new ArrayList<>();
+       for(String s : keys){
+           output.add(s);
+       }
+       return output;
+   }
+   /**
+    * adds a section to the doc with the given key title.
+    * section starts as an empty list
+    * @param k name of new section
+    */
+   public void addKey(String k){
+       keys.add(k);
+       contents.put(k, new ArrayList<String>());
+   }
    
 }

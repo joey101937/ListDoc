@@ -5,6 +5,8 @@
  */
 package listdocument;
 
+import java.io.File;
+
 /**
  *
  * @author Joseph
@@ -15,7 +17,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        ListDocument doc = new ListDocument(new File("test.txt"));
+        System.out.println(doc.getSection("key1"));
+        System.out.println(doc.getKeys());
     }
     
 }
