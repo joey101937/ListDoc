@@ -70,6 +70,9 @@ public class ListDocument {
             currentList.add(lines.get(i));
            }
            contents.put(currentKey,currentList);
+           br.close();
+           ipsr.close();
+           ips.close();
        } catch (FileNotFoundException ex) {
            System.out.println("Error trying to update ListDoc: " + title + " " + underlyingFile.getPath() + " not found");
            ex.printStackTrace();
@@ -77,6 +80,13 @@ public class ListDocument {
            e.printStackTrace();
            System.out.println("Error trying to update ListDoc: " + title + " " + underlyingFile.getPath());
        }
+   }
+   
+   /**
+    * updates the underlying file to match current in-memory contents
+    */
+   public void updateToSource(){
+       
    }
    
    public ListDocument(){
@@ -89,7 +99,11 @@ public class ListDocument {
    }
    
    
-   
+   /**
+    * returns the list stored in the given section
+    * @param key key name to retrieve 
+    * @return contents of the list
+    */
    public ArrayList<String> getSection(String key){
        return contents.get(key);
    }
@@ -105,14 +119,43 @@ public class ListDocument {
        }
        return output;
    }
+   
    /**
     * adds a section to the doc with the given key title.
     * section starts as an empty list
     * @param k name of new section
+    * @return if the key was successfully added, return true. If the key already existed, return false;
     */
-   public void addKey(String k){
+   public boolean addKey(String k){
+       if(!keys.contains(k)){
        keys.add(k);
        contents.put(k, new ArrayList<String>());
+       return true;
+       }else{
+           System.out.println("WARNING TRYING TO ADD KEY " + k + " ALREADY EXISTS");
+           return false;
+       }
+   }
+   /**
+    * replaces the list at the given key with the passed list
+    * @param k key to replace
+    * @param c list to replace with
+    * @return weather or not the replace was a success (key doesnt exist?)
+    */
+   public boolean replace(String k, ArrayList<String> c){
+       if(keys.contains(k)){
+       contents.put(k, c);
+       return true;
+       }
+       else return false;
    }
    
+   /**
+    * removes a given section from a file
+    * @param key 
+    */
+   public void removeSection(String key){
+       contents.remove(key);
+       keys.remove(key);
+   }
 }
