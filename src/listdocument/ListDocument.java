@@ -49,7 +49,7 @@ public class ListDocument {
     * updates contents to match the underlying file
     * CURRENT CONTENTS WILL BE OVERWRITTEN
     */
-   public void updateFromSource(){
+   public void loadFromSource(){
        try {      
            ArrayList<String> lines = new ArrayList<>(); //output is where we store all the lines from the given file
            InputStream ips = new FileInputStream(underlyingFile);
@@ -92,7 +92,7 @@ public class ListDocument {
     * updates the underlying file to match current in-memory contents
     * OVERWRITES FILE IN FILE STRUCTURE
     */
-   public void updateToSource(){
+   public void saveToSource(){
         ArrayList<String> lines = new ArrayList<>();
         lines.add(title);
         for(String key : keys){
@@ -123,7 +123,7 @@ public class ListDocument {
    
    public ListDocument(File f){
        underlyingFile = f;
-       updateFromSource();
+       loadFromSource();
    }
    
    

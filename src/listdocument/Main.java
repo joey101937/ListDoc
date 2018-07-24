@@ -5,7 +5,7 @@
  */
 package listdocument;
 
-import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,9 +17,31 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ListDocument doc = new ListDocument(new File("test.txt"));
-        System.out.println(doc.getSection("key1"));
-        System.out.println(doc.getKeys());
+        
+        ////////////TESTING EXAMPLE 
+             String characterName = "bob";
+             ArrayList<String> items = new ArrayList<>();
+             items.add("sword");
+             items.add("pot");
+             ArrayList<String> friendList = new ArrayList<>();
+             friendList.add("friend1");
+             friendList.add("friend2");
+             ArrayList<String> statline = new ArrayList<String>();
+             statline.add("80");
+             statline.add("80");
+             statline.add("5");
+            ListDocument doc = new ListDocument(characterName);
+            doc.addKey("items");
+            doc.replace("items", items);
+            doc.addKey("friends");
+            doc.replace("friends",friendList);
+            doc.addKey("stats");
+            doc.replace("stats", statline);
+            doc.saveToSource();
+            System.out.println(doc.getKeys());
+            for(String s : doc.getKeys()){
+                System.out.println(doc.getSection(s));
+            }
     }
     
 }
