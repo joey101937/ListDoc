@@ -26,7 +26,10 @@ public class ListDocument {
    private ArrayList<String> rawContent; //raw strings, index corresponds to line
    private Map<String,ArrayList<String>> contents = new HashMap<String,ArrayList<String>>();
    private ArrayList<String> keys = new ArrayList<String>();
-   
+   /**
+    * where underlying files will be saved to. 
+    */
+   public static String workingDirectory = "";
    /*
    first line is title, then after that the first character of a line is either
    k or i, this denotes Key or Item respectively   
@@ -114,7 +117,8 @@ public class ListDocument {
    }
    
    public ListDocument(String name){
-       
+       underlyingFile = new File(workingDirectory + name + ".LD");
+       title = name;
    }
    
    public ListDocument(File f){
